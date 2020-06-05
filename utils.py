@@ -23,7 +23,7 @@ utils.py
 ## Necessary Packages
 import numpy as np
 import tensorflow as tf
-
+import tensorflow_addons as tfa
 
 def train_test_divide (data_x, data_x_hat, data_t, data_t_hat, train_rate = 0.8):
   """Divide train and test data for both original and synthetic data.
@@ -92,13 +92,14 @@ def rnn_cell(module_name, hidden_dim):
   
   # GRU
   if (module_name == 'gru'):
-    rnn_cell = tf.nn.rnn_cell.GRUCell(num_units=hidden_dim, activation=tf.nn.tanh)
+    rnn_cell = tf.compat.v1.nn.rnn_cell.GRUCell(num_units=hidden_dim, activation=tf.nn.tanh)
   # LSTM
   elif (module_name == 'lstm'):
-    rnn_cell = tf.contrib.rnn.BasicLSTMCell(num_units=hidden_dim, activation=tf.nn.tanh)
+    rnn_cell = tf.compat.v1.nn.rnn_cell.BasicLSTMCell(num_units=hidden_dim, activation=tf.nn.tanh)
   # LSTM Layer Normalization
   elif (module_name == 'lstmLN'):
-    rnn_cell = tf.contrib.rnn.LayerNormBasicLSTMCell(num_units=hidden_dim, activation=tf.nn.tanh)
+    rnn_cell = tfa.rnn.LayerNormLSTMCell(units=hidden_dim, activation=tf.nn.tanh)
+    raise NotImplementedError("LayerNorm LSTM Cell is available in TensorFlow 2.0 addons, but is not reverse-compatible with the compat.v1 dynamic_rnn training.")
   return rnn_cell
 
 
